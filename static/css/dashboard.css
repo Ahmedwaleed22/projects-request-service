@@ -1,0 +1,55 @@
+.create-request-link {
+  text-align: center;
+  text-decoration: none;
+  background: var(--primary-color);
+  color: #fff;
+  padding: 10px 15px;
+  max-width: 200px;
+  margin: 0 auto 10px;
+  border-radius: 2px;
+}
+.projects {
+  max-height: 400px;
+  overflow: scroll;
+  padding: 20px 10px;
+  background: #f3f3f3;
+  border-radius: 5px;
+}
+.projects .project-card {
+  border: 1px solid #d4d4d4;
+  margin-bottom: 1em;
+  padding: 10px;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 150px;
+}
+.projects .project-card:hover {
+  background: rgb(210, 210, 210);
+}
+.projects .project-card .title {
+  margin-bottom: 5px;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+.projects .project-card p {
+  margin-bottom: 10px;
+  font-size: .9rem;
+  max-height: 66px;
+  overflow-y: scroll;
+}
+.projects .project-card .price-container .price {
+  font-size: 1em;
+  color: var(--primary-color);
+}
+.projects .project-card .price-container .currency {
+  font-size: .7em;
+  color: orange;
+}
+.instructions-field {
+  padding: 10px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #d4d4d4;
+}

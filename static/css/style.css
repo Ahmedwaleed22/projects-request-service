@@ -1,0 +1,94 @@
+:root {
+  --primary-color: #3f9fff;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.wrapper {
+  width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10px;
+}
+.form-title {
+  background: var(--primary-color);
+  text-align: center;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  padding: 10px;
+  margin-bottom: 1em;
+}
+.form-title h1 {
+  color: #fff;
+  text-transform: uppercase;
+}
+.form-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 30px;
+}
+.form-body .project-fees {
+  text-align: center;
+  margin: 10px auto;
+}
+.form-body .project-fees .price {
+  font-size: 3rem;
+}
+.form-body .project-fees .currency {
+  font-size: 1.5rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2em;
+}
+.form-group label {
+  margin-bottom: 7px;
+}
+.form-group input, select, button {
+  padding: .7em;
+  border-radius: 5px;
+  border: 1px solid #d4d4d4;
+  outline: none;
+}
+button {
+  width: 100%;
+  background: var(--primary-color);
+  border: 0;
+  outline: 0;
+  color: #fff;
+  border-radius: 2px;
+  margin-bottom: 2em;
+  cursor: pointer;
+}
+#messages .message {
+  padding: 15px 20px;
+  margin: 15px 28px;
+  border-radius: 5px
+}
+#messages .message.success-message {
+  background: #4ec34e78;
+}
+#messages .message.error-message {
+  background: #c34e4e78;
+}
+.form-link {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.form-link:hover {
+  color: #0c80f5
+}
+.login-btn {
+  margin-top: 10px;
+}

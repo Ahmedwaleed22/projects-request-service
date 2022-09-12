@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <title>Projects Requests</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-title">
+            <h1>{{ project.project_title }}</h1>
+        </div>
+        <div id="messages"></div>
+        <div class="form-body">
+          {% if project.status == 0 %}
+          <form action="/dashboard/project/{{ project.ID }}" onsubmit="fromSubmit(event)">
+            <div class="form-group">
+              <label for="instructions">Project Instructions</label>
+              <textarea class="instructions-field" placeholder="Write Project Instructions Clearly" name="instructions" id="instructions" style="width: 100%; height: 200px"></textarea>
+              <button class="login-btn">Confirm And Pay</button>
+            </div>
+          </form>
+          {% elif project.status == 1 %}
+          <h1>Waiting...</h1>
+          <p style="margin: 3px 0 20px;">We are waiting admins to approve your project.</p>
+          {% elif project.status == 2 %}
+          <h1>Waiting...</h1>
+          <p style="margin: 3px 0 20px;">We are waiting admins to send work so you will be able to download the files.</p>
+          {% elif project.status == 3 %}
+          <div class="text-align: center">
+            <button class="login-btn" onclick="window.location = '/download/project/{{ project.ID }}'">Download Files</button>
+          </div>
+          {% elif project.status == 4 %}
+          <h1>Rejected...</h1>
+          <p style="margin: 3px 0 20px;">Admins rejected your project.</p>
+          {% endif %}
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <script>
+      const fromSubmit = (event) => {
+        event.preventDefault();
+        const instructions = document.getElementById("instructions");
+        const projectID = '{{ project.ID }}';
+
+        fetch("/api/stripe/config")
+        .then((result) => {
+          return result.json();
+        })
+        .then(async (data) => {
+          const stripe = Stripe(data.publicKey);
+
+          const sessionData = await axios.post(`/dashboard/project/${projectID}`, {
+            instructions: instructions.value
+          });
+
+          return stripe.redirectToCheckout({ sessionId: sessionData.data.sessionId });
+        });
+      }
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Projects Requests</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-title">
+            <h1>Register</h1>
+        </div>
+        <div id="messages">
+            {% if message %}
+            {% if status %}
+            {% if status == 'FAILED' %}
+            <div class="message error-message">{{ message }}</div>
+            {% else %}
+            <div class="message success-message">{{ message }}</div>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+        </div>
+        <div class="form-body">
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input name="username" type="text" id="username" />
+                  </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input name="email" type="email" id="email" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input name="password" type="password" id="password" />
+                </div>
+                <a class="form-link" href="/login">Already Have an Account?</a>
+                <button class="login-btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Projects Requests</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-title">
+            <h1>Project Request</h1>
+        </div>
+        <div id="messages"></div>
+        <div class="form-body">
+            <form action="/send-work" method="POST" onsubmit="formSubmit(event)">
+                <section class="project-fees">
+                    <span class="price" id="price">0.00</span>
+                    <span class="currency">INR</span>
+                </section>
+                <div class="form-group">
+                    <label for="project-name">Project Name</label>
+                    <input name="project_name" type="text" id="project-name" />
+                </div>
+                <div class="form-group">
+                    <label for="category">Project Category</label>
+                    <select name="category" id="category">
+                        <option value="" disabled selected>Select Category</option>
+                        {% for category in categories %}
+                        <option value="{{ category[0] }}">{{ category[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="project">Project</label>
+                    <select name="project" id="project"></select>
+                </div>
+                <button>Send For Admins</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <script>
+        const categorySelect = document.getElementById("category");
+        const projectSelect = document.getElementById("project");
+        const priceField = document.getElementById("price");
+        const messagesContainer = document.getElementById("messages");
+
+        const changePrice = (price) => priceField.textContent = price;
+        
+        categorySelect.addEventListener("change", async (event) => {
+            const id = event.target.value;
+            const { data } = await axios.get(`/api/getprojects/${id}`);
+            projectSelect.innerHTML = '';
+
+            data.map(project => {
+                const projectOption = document.createElement('option');
+                projectOption.textContent = project.name;
+                projectOption.value = project.ID;
+                projectOption.setAttribute('data-price', project.price);
+                projectOption.classList.add('project-option');
+                projectSelect.append(projectOption);
+            });
+
+            changePrice(data[0].price);
+        });
+
+        projectSelect.addEventListener('change', (event) => changePrice(document.querySelector(`.project-option[value='${event.target.value}']`).getAttribute('data-price')));
+
+        const formSubmit = async (event) => {
+            event.preventDefault();
+            
+            const projectName = document.getElementById("project-name");
+            const category = document.getElementById("category");
+            const project = document.getElementById("project");
+
+            try {
+                const { data } = await axios.post('/send-work', {
+                project_title: projectName.value,
+                category_id: category.value,
+                project_id: project.value
+                });
+
+                const message = document.createElement('div');
+                message.textContent = data;
+                message.classList.add('message');
+                message.classList.add('success-message');
+                messagesContainer.append(message);
+            } catch (e) {
+                const errorMessage = e.response;
+
+                const message = document.createElement('div');
+                message.textContent = errorMessage;
+                message.classList.add('message');
+                message.classList.add('error-message');
+                messagesContainer.append(message);
+            }
+        }
+    </script>
+</body>
+</html>

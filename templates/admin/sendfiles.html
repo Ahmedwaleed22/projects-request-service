@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/admin/projects.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+{% endblock %}
+{% block content %}
+<div class="form-body">
+  <form action="{{ request.url }}" method="POST" enctype = "multipart/form-data">
+    <div class="form-group">
+      <label for="files">Project Files</label>
+      <input type="file" name="files" id="files">
+    </div>
+    <button type="submit">Send Projects File</button>
+  </form>
+</div>
+{% endblock %}

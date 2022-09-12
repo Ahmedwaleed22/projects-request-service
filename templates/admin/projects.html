@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/admin/projects.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+{% endblock %}
+{% block content %}
+<table class="projects-table">
+  <thead>
+    <tr>
+      <th>Project Title</th>
+      <th>Instructions</th>
+      <th>Status</th>
+      <th>Service Name</th>
+      <th>Category Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in projects %}
+    <tr>
+      <td>{{ project['project_title'] }}</td>
+      <td>{{ project['instructions'] }}</td>
+      <td>{{ status_messages[project['status']] }}</td>
+      <td>{{ project['service_name'] }}</td>
+      <td>{{ project['category_name'] }}</td>
+      <td>
+        {% if project['status'] == 1 %}
+        <a href="/admin/api/projects/{{ project['ID'] }}/approve"><i class="fa-sharp fa-solid fa-thumbs-up"></i></a>
+        <a href="/admin/api/projects/{{ project['ID'] }}/reject"><i class="fa-sharp fa-solid fa-thumbs-down"></i></a>
+        {% elif project['status'] == 2 %}
+        <a href="/admin/projects/{{ project['ID'] }}/sendfiles"><i class="fa-solid fa-cloud-arrow-up"></i></a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

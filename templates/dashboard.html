@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <title>Projects Requests</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-title">
+            <h1>Dashboard</h1>
+        </div>
+        <div id="messages"></div>
+        <div class="form-body">
+          <a class="create-request-link" href="/create">Create Project Request</a>
+          <div class="projects">
+            {% for project in projects %}
+            <div class="project-card" onclick="toProjectPage('{{ project.request_id }}')">
+              <h1 class="title">{{ project.project_title }}</h1>
+              <p>{{ project.instructions }}</p>
+              <div class="price-container">
+                <span class="price">{{ project.price }}</span>
+                <span class="currency">INR</span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+    <script>
+      const toProjectPage = (id) => window.location = `/dashboard/project/${id}`;
+    </script>
+</body>
+</html>
