@@ -25,7 +25,10 @@
             {% endif %}
         </div>
         <div class="form-body">
-            <form action="/register" method="POST">
+            <form action="{{ request.url }}" method="POST">
+                <input type="hidden" name="project_name" value="{{ request.args.get('project_name', default='') }}" />
+                <input type="hidden" name="project_category" value="{{ request.args.get('project_category', default='') }}" />
+                <input type="hidden" name="project" value="{{ request.args.get('project', default='') }}" />
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input name="username" type="text" id="username" />

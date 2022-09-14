@@ -137,6 +137,11 @@ def register():
     email = request.form.get('email')
     password = request.form.get('password')
 
+    # Project Info
+    project_title = request.form.get('project_name', default=None)
+    category_id = request.form.get('project_category', default=None)
+    project_id = request.form.get('project', default=None)
+
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT COUNT(*) FROM users WHERE email = %s", (email,))
     count = cursor.fetchone()[0]
@@ -145,10 +150,33 @@ def register():
       hashed_pass = bcrypt.generate_password_hash(password)
       cursor.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", (username, email, hashed_pass))
       mysql.connection.commit()
+      user_id = cursor.lastrowid
       cursor.close()
+
+      if project_title is not None and category_id is not None and project_id is not None:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT name FROM work WHERE ID = %s", (project_id,))
+        project = cursor.fetchone()[0]
+        cursor.close()
+
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT name FROM categories WHERE ID = %s", (category_id,))
+        category = cursor.fetchone()[0]
+        cursor.close()
+
+        msg = Message("New Project Requested", sender='support@complete-thesis.com', recipients=['me@ahmedwaleed.net'])
+        msg.body = f"Someone requested a projected of type {project} from category {category}"
+        mail.send(msg)
+
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO work_requests (project_title, services_id, user_id) VALUES (%s, %s, %s)", (project_title, project_id, user_id))
+        mysql.connection.commit()
+        cursor.close()
+
+        return render_template('register.html', message="Account Created Successfully and Project Sent to Admins For Approval", status='SUCCESS')
+
     else:
       return render_template('register.html', message="Email Already Registered", status='FAILED')
-
 
     return render_template('register.html', message="Account Created Successfully", status='SUCCESS')
 
