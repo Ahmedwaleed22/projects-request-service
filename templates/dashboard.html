@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,4 +35,54 @@
       const toProjectPage = (id) => window.location = `/dashboard/project/${id}`;
     </script>
 </body>
+</html> -->
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>popup</title>
+    <link rel="stylesheet" href="/static/css/clientDashboard.css">
+    <link rel="stylesheet" href="/static/css/header1.css">
+    <script src="https://kit.fontawesome.com/283605f283.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header class="container1">
+        <nav id="navbar">
+            <div id="first">
+                <div id="logo">
+                </div>
+                <ul>
+                    <li class="item"><a href="" target="_blank"> Dashboard </a></li>
+                    <li class="item"><a href="myorder.php" target="_blank"> My Order </a></li>
+                </ul>
+            </div>
+            <div id="second">
+                <ul>
+                    <li class="list_btn" onclick="openPopup()"> Create Thesis</li>
+                    <li class="list_btn"> My Profile</li>
+                    <li class="list_btn"> Notifications</li>
+                    <li class="list_btn"> Logout </li>
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+    <div class="container">
+        <div class="typewriter">
+            <h1>Welcome</h1>
+          </div>
+        <div>
+            <h2>It is easy to create Thesis with <span id="mid">CompleteThesis.com</span> </h2>
+        </div>
+        <div>
+            <p>Create thesis as per your requirement</p>
+        </div>
+        <button type="submit" class="create_btn" onclick="document.location = '/create'">Place Order</button>
+
+</body>
+
 </html>

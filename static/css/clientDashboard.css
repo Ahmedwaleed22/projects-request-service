@@ -1,0 +1,199 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background: linear-gradient(141deg, #ccc 25%, #eee 40%, #ddd 55%) no-repeat;
+  color: #555;
+  font-weight: 300;
+  height: 100%;
+}
+
+
+/* main body */
+
+.container {
+  height: 545px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: -9px;
+}
+
+#popup {
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  background-color: white;
+  border-radius: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%) scale(0.1);
+  visibility: hidden;
+  transition: transform 0.4s, top 0.4s;
+}
+
+.btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+}
+
+.boxes {
+  border-radius: 5px;
+  border: 1px solid rgb(193, 193, 193);
+  height: 180px;
+  width: 370px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 15px 3px;
+  transform: scale(0.9);
+  transition: transform 0.4s, top 0.4s;
+  box-shadow: 2px 6px 26px -11px rgb(162 162 162);
+}
+
+.boxes:hover {
+  box-shadow: 2px 6px 26px -5px rgb(162 162 162);
+}
+
+#box1:hover {
+  transform: scale(1);
+}
+
+#box2:hover {
+  transform: scale(1);
+}
+
+#box3:hover {
+  transform: scale(1);
+}
+
+.create_btn {
+  cursor: pointer;
+}
+
+.close_btn {
+  cursor: pointer;
+  outline: none;
+  border: 1px solid white;
+  font-size: 1.2rem;
+  background-color: rgb(223, 223, 223);
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin: 15px 0px;
+}
+
+.close_btn:hover {
+  border: 1px solid rgb(81, 81, 81);
+}
+
+h6 {
+  color: grey;
+  padding-bottom: 8px;
+  border-bottom: 1px solid green;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+
+}
+
+h2 {
+  margin-top: 0px !important;
+  font-weight: bolder;
+  letter-spacing: 2px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.container h1 {
+  font-family: sans-serif;
+  font-size: 3.7rem;
+  font-weight: bolder;
+  margin-bottom: 10px;
+}
+
+.container h2 {
+  font-size: 1.6rem;
+  margin-top: 0px !important;
+  color: rgb(71, 63, 63);
+  font-weight: lighter;
+}
+
+.container p {
+  margin-top: 40px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid green;
+  padding-bottom: 3px;
+  letter-spacing: 2px;
+}
+
+.create_btn {
+  margin-top: 20px;
+  border-radius: 4px;
+  width: 150px;
+  font-size: 1.3rem;
+  padding: 8px 10px;
+  border: 1px solid rgb(121, 121, 121);
+  font-weight: bold;
+}
+
+.create_btn:hover {
+  background-color: rgb(255, 186, 57);
+  transition: background-color 0.7s, top 0.5s;
+}
+
+
+.process {
+  margin-top: 110px;
+}
+
+#mid{
+  background:rgb(255, 186, 57);
+  cursor:pointer;
+  color:black;
+  font-weight: 1000;
+}
+#mid:hover{
+  background-color:rgb(255, 255, 66);
+  transition: background-color 0.7s;
+}
+.typewriter{
+  margin-top:80px;
+}
+.typewriter h1 {
+  color: black;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 5px; 
+  margin-bottom:15px;/* Adjust as needed */
+  animation: 
+    typing 2.5s steps(30, end),
+    blink-caret .5s step-end infinite;
+}
+
+
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange }
+}

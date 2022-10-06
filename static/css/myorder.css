@@ -1,0 +1,73 @@
+.styled-table {
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    font-size: 2.1em;
+    font-family: 'Roboto', sans-serif;
+    min-width: 800px;
+    box-shadow: 0 0 22px rgba(0, 0, 0, 0.15);    
+  }
+
+.head{
+    background-color: #d8e5f3;
+    color: #292525;
+    text-align: left;
+}
+  
+  .styled-table thead tr {
+    background-color: #3f3f3f;
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+      padding: 12px 15px;
+  }
+  
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .styled-table tbody tr:last-of-type {
+    border-bottom: 2.5px solid #3f3f3f;
+  }
+  
+  .styled-table tbody tr.active-row {
+    
+    color: #377064;
+  }
+
+  .typewriter{
+    margin-top:80px;
+  }
+  .typewriter h1 {
+    color: black;
+    overflow: hidden; /* Ensures the content is not revealed until the animation */
+    border-right: .15em solid orange; /* The typwriter cursor */
+    white-space: nowrap; /* Keeps the content on a single line */
+    margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+    letter-spacing: 5px; 
+    margin-bottom:15px;/* Adjust as needed */
+    animation: 
+      typing 2.5s steps(30, end),
+      blink-caret .5s step-end infinite;
+  } 
+
+  
+  /* The typing effect */
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  
+  /* The typewriter cursor effect */
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: orange }
+  }

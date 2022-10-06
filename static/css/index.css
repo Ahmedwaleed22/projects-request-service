@@ -1,0 +1,446 @@
+* {
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0%;
+}
+
+body {
+    width: 100%;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    margin-top: 65px;
+}
+
+#box1 {
+    height: 620px;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#box2 {
+    width: 40%;
+    height: 620x;
+    background: url(../bg__2_-removebg-preview.png) no-repeat;
+    background-size: auto 80%;
+    background-position-y: 53px;
+    background-position-x: -35px;
+    opacity: 0.9;
+}
+
+#primary {
+    width: 60%;
+    font-size: 5rem;
+    font-weight: bolder;
+    color: black;
+    text-shadow: 0 0 10px grey;
+}
+
+button {
+    display: inline-block;
+    position: relative;
+    background: none;
+    border: none;
+    color: black;
+    font-weight: bolder;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 40px 0px;
+    background: rgba(43, 174, 174, 0.646);
+    box-shadow: 6px 8px 18px 3px #888888;
+}
+
+span {
+    display: block;
+    padding: 15px 60px;
+}
+
+button::before,
+button::after {
+    content: "";
+    width: 0;
+    height: 2px;
+    position: absolute;
+    transition: all 0.2s linear;
+    background: rgb(0, 0, 0);
+}
+
+span::before,
+span::after {
+    content: "";
+    width: 2px;
+    height: 0;
+    position: absolute;
+    transition: all 0.2s linear;
+    background: rgb(0, 0, 0);
+}
+
+button:hover::before,
+button:hover::after {
+    width: 100%;
+}
+
+button:hover span::before,
+button:hover span::after {
+    height: 100%;
+}
+
+.btn::after {
+    right: 0;
+    bottom: 0;
+    transition-duration: 0.4s;
+}
+
+.btn span::after {
+    right: 0;
+    bottom: 0;
+    transition-duration: 0.4s;
+}
+
+.btn::before {
+    left: 0;
+    top: 0;
+    transition-duration: 0.4s;
+}
+
+.btn span::before {
+    left: 0;
+    top: 0;
+    transition-duration: 0.4s;
+}
+
+/* flow chart */
+
+.flowchart {
+    margin: 50px 0px;
+    width: 100%;
+    height: 690px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner-flowchart {
+    width: 90%;
+    height: 100%;
+    margin: 40px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.flowchart-box {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.flow {
+    display: flex;
+    height: 33%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.secondary {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.tertiary {
+    font-size: 2rem;
+}
+
+.flow-btn {
+    cursor: pointer;
+    height: 80%;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+#flow-btn1 {
+    border: 14px solid rgba(43, 174, 174, 0.646);
+}
+
+#flow-btn1:hover {
+    border-color: #55ffe0;
+}
+
+#flow-btn2 {
+    border: 14px solid rgb(106, 19, 255);
+}
+
+#flow-btn2:hover {
+    border-color: rgb(160, 105, 255);
+}
+
+#flow-btn3 {
+    border: 14px solid grey;
+}
+
+#flow-btn3:hover {
+    border-color: rgb(184, 184, 184);
+}
+
+#flow-btn4 {
+    border: 14px solid black;
+}
+
+#flow-btn4:hover {
+    border-color: rgb(59, 59, 59);
+}
+
+.mid {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.flow-innermost1 {
+    height: 5px;
+    width: 30%;
+    border-bottom: 3px solid black;
+}
+
+.flow-innermost2 {
+    height: 100%;
+}
+
+.top {
+    height: 10%;
+    width: 5px;
+}
+
+.add {
+    border-left: 5px solid black;
+}
+
+.bottom {
+    height: 10%;
+    width: 5px;
+}
+
+.addb {
+    border-left: 5px solid black;
+}
+
+.ignore {
+    border: 0px solid white;
+}
+
+/* clients section */
+
+.clients {
+    margin: 50px 0px;
+}
+
+.inner-clients {
+    margin: 50px 30px;
+}
+
+.images {
+    margin-left: 40px;
+}
+
+/* responsive */
+
+@media (max-width:1110px) {
+    main {
+        display: flex;
+        flex-direction: column-reverse;
+        margin-top: 87px;
+    }
+
+    .btn {
+        color: black;
+        display: inline;
+        border-radius: 10px;
+        margin-top: 40px;
+        width: 205px;
+        font-size: 1.5rem;
+        padding: 4px 6px;
+        font-weight: bolder;
+    }
+
+    span {
+        padding: 4px 8px;
+    }
+
+    #primary {
+        width: 70%;
+        font-size: 1.7rem;
+        text-align: center;
+        font-weight: bolder;
+        color: black;
+    }
+
+    #box2 {
+        width: 100%;
+        height: 225px;
+        background: url(../bg__2_-removebg-preview.png) no-repeat center center;
+        background-size: 190px;
+        margin-top: 30px;
+        margin-bottom: 45px;
+    }
+
+    #box1 {
+        height: 262px;
+        width: 100%;
+        margin-top: -100px;
+    }
+}
+
+@media (max-width:640px) {
+    #secondary {
+        font-size: 1.6rem;
+        font-weight: bolder;
+        color: black;
+        margin: 1px 0px;
+        margin-bottom: -33px;
+    }
+
+    #para {
+        width: 100%;
+        height: 345px;
+        background: url('../flowchart2.jpg') no-repeat center center;
+        background-size: 100% auto;
+    }
+}
+
+@media(max-width:1000px) {
+    .flowchart {
+        height: 635px;
+        margin: 20px 0px;
+    }
+
+    .clients {
+        margin: 20px 0px;
+    }
+
+    .secondary {
+        font-size: 1.5rem;
+    }
+
+    .tertiary {
+        font-size: 1.2rem;
+    }
+
+    .inner-flowchart {
+        flex-direction: column;
+    }
+
+    .flowchart-box {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .flow {
+        height: 100%;
+        width: 33%;
+    }
+
+    .flow-btn {
+        height: 80%;
+        width: 56%;
+        border-width: 9px !important;
+    }
+
+    .addr {
+        border-left: 5px solid black;
+    }
+
+    .flow-innermost1 {
+        height: 5px;
+        width: 22%;
+        border-bottom: 3px solid black;
+    }
+
+    .remove {
+        border: 0px solid white;
+    }
+
+    .left {
+        align-items: flex-start;
+    }
+
+    .right {
+        align-items: flex-end;
+    }
+
+    .images {
+        margin-left: 20px;
+    }
+
+    .inner-clients {
+        margin: 35px 20px;
+    }
+
+    .images {
+        height: 100px;
+        width: 100px;
+    }
+
+}
+
+@media(max-width:500px) {
+    .secondary {
+        font-size: 1.5rem;
+    }
+
+    .tertiary {
+        font-size: 1.2rem;
+    }
+
+    .inner-flowchart {
+        width: 100%;
+    }
+
+    .flow-btn {
+        height: 83%;
+        width: 57%;
+        border-width: 9px !important;
+    }
+
+    .flow-innermost1 {
+        height: 5px;
+        width: 10%;
+        border-bottom: 3px solid black;
+
+    }
+
+    .remove {
+        border: 0px solid white;
+    }
+
+    .left {
+        align-items: flex-start;
+    }
+
+    .right {
+        align-items: flex-end;
+    }
+
+    .dec {
+        width: 30%;
+    }
+
+    .inc {
+        width: 40%;
+    }
+}

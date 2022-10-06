@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify, send_from_directory
 from flask_mysqldb import MySQL
 from flask_bcrypt import Bcrypt
@@ -15,9 +16,19 @@ import os
 
 path = os.getcwd()
 PROJECTS_FOLDER = os.path.join(path, 'projects')
+REFERENCES_FOLDER = os.path.join(path, 'refernces')
+CHAT_FOLDER = os.path.join(path, 'chat')
 
 if not os.path.isdir(PROJECTS_FOLDER):
   os.mkdir(PROJECTS_FOLDER)
+
+
+if not os.path.isdir(REFERENCES_FOLDER):
+  os.mkdir(REFERENCES_FOLDER)
+
+
+if not os.path.isdir(CHAT_FOLDER):
+  os.mkdir(CHAT_FOLDER)
 
 
 app = Flask(__name__)
@@ -35,6 +46,8 @@ app.config['MAIL_USE_SSL'] = True
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['PROJECTS_FOLDER'] = PROJECTS_FOLDER
+app.config['REFERENCES_FOLDER'] = REFERENCES_FOLDER
+app.config['CHAT_FOLDER'] = CHAT_FOLDER
 
 stripe_keys = {
   'secret_key': 'sk_test_51KL5fZSIeo8cbA9acaGiriXApreMJoliz1YnTX9SdweJMliwxVUeMDoU8zdb8nLFFVMmcUizp1S2BSlx1OVwhJ5j00i59tU6US',
@@ -105,7 +118,8 @@ def create():
     cursor.execute("SELECT * FROM categories")
     categories = cursor.fetchall()
     cursor.close()
-    return render_template('create.html', categories=categories)
+    user_id = session.get('user_id')
+    return render_template('create.html', categories=categories, user_id=user_id)
   else:
     return redirect(url_for('login'))
 
@@ -187,14 +201,26 @@ def register():
 @app.route('/send-work', methods=['POST'])
 def send_work():
   if session.get('user_id'):
-    project_title = request.json.get('project_title')
-    category_id = request.json.get('category_id')
-    project_id = request.json.get('project_id')
+    project_title = request.form.get('project_title')
+    category_id = request.form.get('category_id')
+    project_id = request.form.get('project_id')
+    pages = request.form.get('pages')
+    deadline = request.form.get('deadline')
+    reference_file = request.files['reference_file']
+    instructions = request.form.get('instructions')
     user_id = session.get('user_id')
 
+    refernce_filename = secure_filename(reference_file.filename)
+
+    # file upload
+    reference_file.save(os.path.join(app.config['REFERENCES_FOLDER'], refernce_filename))
+
+
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT name FROM work WHERE ID = %s", (project_id,))
-    project = cursor.fetchone()[0]
+    cursor.execute("SELECT name, price FROM work WHERE ID = %s", (project_id,))
+    project = cursor.fetchone()
+    project_name = project[0]
+    project_price = project[1]
     cursor.close()
 
     cursor = mysql.connection.cursor()
@@ -203,17 +229,66 @@ def send_work():
     cursor.close()
 
     msg = Message("New Project Requested", sender='support@complete-thesis.com', recipients=['me@ahmedwaleed.net'])
-    msg.body = f"Someone requested a projected of type {project} from category {category}"
+    msg.body = f"Someone requested a projected of type {project_name} from category {category}"
     mail.send(msg)
 
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO work_requests (project_title, services_id, user_id) VALUES (%s, %s, %s)", (project_title, project_id, user_id))
+    cursor.execute("INSERT INTO work_requests (project_title, services_id, user_id, pages, deadline, reference, instructions, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (project_title, project_id, user_id, pages, deadline, refernce_filename, instructions, 9))
     mysql.connection.commit()
     cursor.close()
 
-    return "Waiting For Admin To Approve The Request"
+    checkout_id = ''.join(random.choice(string.ascii_letters) for i in range(32))
+    work_request_id = cursor.lastrowid
+
+    product = stripe.Product.create(
+      name=project_title,
+    )
+
+    # checkout using stripe
+    price = stripe.Price.create(
+      currency='inr',
+      unit_amount=int(project_price) * 100,
+      product=product.id
+    )
+
+    stripe_session = stripe.checkout.Session.create(
+      payment_method_types=['card'],
+      mode='payment',
+      line_items=[
+        {
+          'price': price.id,
+          'quantity': 1,
+        }
+      ],
+      payment_intent_data={
+        'metadata': {
+          'work_request_id': work_request_id
+        }
+      },
+      success_url='http://localhost:8000/send-work-complete/{CHECKOUT_SESSION_ID}',
+      cancel_url=url_for('checkout_cancel', _external=True)
+    )
+
+    return jsonify({"sessionId": stripe_session["id"]})
   else:
     return "Not Logged In", 403
+
+@app.route('/send-work-complete/<session_id>', methods=['GET', 'POST'])
+def send_work_complete(session_id):
+  try:
+    session = stripe.checkout.Session.retrieve(session_id)
+    payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+    checkout_id = payment_intent.metadata.get('work_request_id')
+
+    if session.payment_status == 'paid':
+      cursor = mysql.connection.cursor()
+      cursor.execute("UPDATE work_requests SET status = %s WHERE ID = %s", (1, checkout_id))
+      mysql.connection.commit()
+      return redirect(url_for('order_history'))
+
+    return render_template('error.html')
+  except stripe.error.InvalidRequestError:
+    return render_template('canceled.html')
 
 
 @app.route('/dashboard')
@@ -229,6 +304,50 @@ def dashboard():
     return render_template('dashboard.html', projects=results)
 
   return redirect(url_for('login'))
+
+
+@app.route('/dashboard/order/history')
+def order_history():
+  if session.get('user_id'):
+    user_id = session.get('user_id')
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT work_requests.*, work.*, work_requests.ID as request_id FROM work_requests INNER JOIN work ON work_requests.services_id = work.ID WHERE work_requests.user_id = %s AND work_requests.status > 0", (user_id,))
+    projects = cursor.fetchall()
+    results = fetch_all_with_columns(cursor.description, projects)
+    
+    cursor.execute("SELECT * FROM chat WHERE user_id = %s", (user_id,))
+    chat = cursor.fetchall()
+    chat = fetch_all_with_columns(cursor.description, chat)
+
+    cursor.close()
+    work_status = ('ACTIVE', 'COMPLETED')
+
+    return render_template('order_history.html', projects=results, work_status=work_status, chat=chat)
+
+  return redirect(url_for('login'))
+
+
+@app.route('/dashboard/order/history/<project_id>/workfiles')
+def download_project_work_files(project_id):
+  cursor = mysql.connection.cursor()
+  cursor.execute("SELECT * FROM project_files WHERE project_id = %s", (project_id,))
+  files = cursor.fetchall()
+
+  return render_template('work_files.html', files=files)
+
+
+@app.route('/dashboard/order/history/project/<project_id>/reference/upload', methods=['POST'])
+def upload_reference(project_id):
+  file = request.files['myfile']
+  filename = secure_filename(file.filename)
+
+  file.save(os.path.join(app.config['REFERENCES_FOLDER'], filename))
+
+  cursor = mysql.connection.cursor()
+  cursor.execute("INSERT INTO reference_files (files, project_id) VALUES (%s, %s)", (filename, project_id))
+  mysql.connection.commit()
+
+  return redirect(url_for('order_history', message='Successfully Sent References'))
 
 
 @app.route('/dashboard/project/<id>', methods=['GET', 'POST'])
@@ -330,7 +449,7 @@ def checkout_cancel():
 @app.route('/download/project/<id>')
 def download_project(id):
   cursor = mysql.connection.cursor()
-  cursor.execute("SELECT * FROM project_files WHERE project_id = %s", (id,))
+  cursor.execute("SELECT * FROM project_files WHERE ID = %s", (id,))
   filename = cursor.fetchone()[1]
 
   return send_from_directory(app.config['PROJECTS_FOLDER'], filename, as_attachment=True)
@@ -345,6 +464,144 @@ def get_projects(id):
   cursor.close()
 
   return results
+
+
+# Chat Routes
+
+@app.route('/chat/user/message/send', methods=['POST'])
+def user_send_message():
+  if session.get('user_id'):
+    message = request.json.get('message')
+    user_id = session.get('user_id')
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO chat (message, user_id) VALUES (%s, %s)", (message, user_id))
+    cursor.execute("UPDATE users SET notifications = %s WHERE ID = %s", (1, user_id))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({
+      "status": 1,
+      "message": "Message Sent!",
+      "data": message
+    })
+
+  return jsonify({
+    "status": 0,
+    "message": "Message Couldn't be Sent!",
+    "data": ""
+  }), 400
+
+
+@app.route('/chat/user/file/send', methods=['POST'])
+def user_send_file():
+  if session.get('user_id'):
+    file = request.files['file']
+    user_id = session.get('user_id')
+    filename = secure_filename(file.filename)
+
+    file.save(os.path.join(app.config['CHAT_FOLDER'], filename))
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO chat (message, user_id, type) VALUES (%s, %s, %s)", (filename, user_id, 1))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({
+      "status": 1,
+      "message": "File Uploaded!",
+      "data": filename
+    })
+
+  return jsonify({
+    "status": 0,
+    "message": "File Couldn't be Sent!",
+    "data": ""
+  }), 400
+
+
+@app.route('/chat/admin/message/send', methods=['POST'])
+def admin_send_message():
+  if session.get('admin_id'):
+    message = request.json.get('message')
+    user_id = request.json.get('user_id')
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO chat (message, user_id, sender) VALUES (%s, %s, %s)", (message, user_id, 1))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({
+      "status": 1,
+      "message": "Message Sent!",
+      "data": message
+    })
+
+  return jsonify({
+    "status": 0,
+    "message": "Message Couldn't be Sent!",
+    "data": ""
+  }), 400
+
+
+@app.route('/chat/admin/file/send', methods=['POST'])
+def admin_send_file():
+  if session.get('admin_id'):
+    file = request.files['file']
+    user_id = request.form.get('user_id')
+    filename = secure_filename(file.filename)
+
+    file.save(os.path.join(app.config['CHAT_FOLDER'], filename))
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO chat (message, user_id, sender, type) VALUES (%s, %s, %s, %s)", (filename, user_id, 1, 1))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({
+      "status": 1,
+      "message": "File Uploaded!",
+      "data": filename
+    })
+
+  return jsonify({
+    "status": 0,
+    "message": "File Couldn't be Sent!",
+    "data": ""
+  }), 400
+
+
+@app.route('/api/chat/messages')
+def chat_messages_api():
+  user_id = session.get('user_id')
+
+  cursor = mysql.connection.cursor()
+  cursor.execute("SELECT * FROM chat WHERE user_id = %s", (user_id,))
+  chat = cursor.fetchall()
+  chat = fetch_all_with_columns(cursor.description, chat)
+  cursor.close()
+
+  return jsonify(chat)
+
+
+@app.route('/api/chat/admin/messages/<user_id>')
+def admin_chat_messages_api(user_id):
+  cursor = mysql.connection.cursor()
+  cursor.execute("SELECT * FROM chat WHERE user_id = %s", (user_id,))
+  chat = cursor.fetchall()
+  chat = fetch_all_with_columns(cursor.description, chat)
+  cursor.close()
+
+  return jsonify(chat)
+
+
+@app.route('/api/chat/file/<file_id>/download')
+def download_chat_file(file_id):
+  cursor = mysql.connection.cursor()
+  cursor.execute("SELECT * FROM chat WHERE ID = %s", (file_id,))
+  filename = cursor.fetchone()[1]
+
+  return send_from_directory(app.config['CHAT_FOLDER'], filename, as_attachment=True)
 
 
 # Admin Panel Routes
@@ -403,22 +660,81 @@ def send_files(id):
   return render_template('/admin/sendfiles.html')
 
 
+@app.route('/admin/chat')
+def admin_chat():
+  cursor = mysql.connection.cursor()
+  cursor.execute("SELECT * FROM users ORDER BY notifications DESC")
+  users = cursor.fetchall()
+  users = fetch_all_with_columns(cursor.description, users)
+
+  return render_template('admin/chat.html', users=users)
+
+
+@app.route('/admin/chat/<user_id>')
+def admin_chat_with_user(user_id):
+  cursor = mysql.connection.cursor()
+  cursor.execute("UPDATE users SET notifications = %s WHERE ID = %s", (0, user_id))
+  mysql.connection.commit()
+
+  return render_template('admin/chatboard.html', user_id=user_id)
+
+
+@app.route('/admin/api/projects/<id>/references/download')
+def download_references(id):
+  cursor = mysql.connection.cursor()
+  cursor.execute('SELECT * FROM reference_files WHERE project_id = %s', (id,))
+  files = fetch_all_with_columns(cursor.description, cursor.fetchall())
+
+  return render_template('/admin/files.html', files=files, project_id=id)
+
+
+@app.route('/admin/api/projects/<project_id>/files/<file_id>/download')
+def download_file(project_id, file_id):
+  cursor = mysql.connection.cursor()
+  cursor.execute('SELECT * FROM reference_files WHERE ID = %s', (file_id,))
+  filename = cursor.fetchone()[1]
+
+  return send_from_directory(app.config['REFERENCES_FOLDER'], filename, as_attachment=True)
+
+
 @app.route('/admin/api/projects/<id>/<status>')
-def set_status(id, status):
+def set_work_status(id, status):
   if not session.get('admin_id'):
     return redirect(url_for('admin_login'))
 
-  status_code = 4
+  status_code = 0
 
-  if status == 'approve':
-    status_code = 2
+  if status == 'complete':
+    status_code = 1
 
+  elif status == 'active':
+    status_code = 0
+
+  
   cursor = mysql.connection.cursor()
-  cursor.execute("UPDATE work_requests SET status = %s WHERE ID = %s", (status_code, id))
+  cursor.execute("UPDATE work_requests SET work_status = %s WHERE ID = %s", (status_code, id))
   mysql.connection.commit()
   cursor.close()
 
   return redirect(url_for('admin'))
+
+
+# @app.route('/admin/api/projects/<id>/<status>')
+# def set_status(id, status):
+#   if not session.get('admin_id'):
+#     return redirect(url_for('admin_login'))
+
+#   status_code = 4
+
+#   if status == 'approve':
+#     status_code = 2
+
+#   cursor = mysql.connection.cursor()
+#   cursor.execute("UPDATE work_requests SET status = %s WHERE ID = %s", (status_code, id))
+#   mysql.connection.commit()
+#   cursor.close()
+
+#   return redirect(url_for('admin'))
 
 
 if __name__ == '__main__':

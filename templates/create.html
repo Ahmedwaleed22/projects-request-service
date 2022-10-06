@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -100,4 +100,175 @@
         }
     </script>
 </body>
+</html> -->
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>popup</title>
+    <link rel="stylesheet" href="/static/css/formdashboard.css">
+    <link rel="stylesheet" href="/static/css/header1.css">
+    <script src="https://kit.fontawesome.com/283605f283.js" crossorigin="anonymous"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+    <header class="container1">
+        <nav id="navbar">
+            <div id="first">
+                <div id="logo">
+                </div>
+                <ul>
+                    <li class="item"><a href="" target="_blank"> Dashboard </a></li>
+                    <li class="item"><a href="myorder.php" target="_blank"> My Order </a></li>
+                </ul>
+            </div>
+            <div id="second">
+                <ul>
+                    <li class="list_btn" onclick="openPopup()"> Create Thesis</li>
+                    <li class="list_btn"> My Profile</li>
+                    <li class="list_btn"> Notifications</li>
+                    <li class="list_btn"> Logout </li>
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+    <br>
+    <br>
+    <div class="container">
+        <div class="typewriter">
+            <h1>Order</h1>
+        </div>
+        <div class="contain">
+            <form action="/send-work" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-25">
+                        <label for="fname">Name of Project</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" id="fname" name="project_title" placeholder="Project Name..">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="country">Subject</label>
+                    </div>
+                    <div class="col-75">
+                        <select id="subject" name="category_id">
+                            {% for category in categories %}
+                            <option value="{{ category[0] }}">{{ category[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="country">Type of Project</label>
+                    </div>
+                    <div class="col-75">
+                        <select id="Type" name="project_id"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="country">Number of Pages</label>
+                    </div>
+                    <div class="col-75">
+                        <select id="pages" name="pages">
+                            <option value="10-20">10-20</option>
+                            <option value="20-30">20-30</option>
+                            <option value="30-40">30-40</option>
+                            <option value="50<">more than 50</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="subject">Deadline</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="date" id="deadline" name="deadline">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="subject">Reference Document</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="file" id="file" name="reference_file">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="subject">Instructions</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" id="instructions" name="instructions"
+                            placeholder="Project relevant instructions..">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div id="div2"></div>
+                    <!-- <input type="submit" id="btnok" onclick="addText();" value="Submit" /> -->
+                    <button type="button" id="btnok">Submit</button>
+                    <br />
+                </div>
+                <style>
+                    input[type=button] {
+                        margin-left: 67%;
+                        background-color: #7cef89;
+                        color: rgb(7, 7, 7);
+                        padding: 9px 20px;
+                        border: none;
+                        border-radius: 40px;
+                        cursor: pointer;
+                        float: center;
+                    }
+                </style>
+            </form>
+        </div>
+        <script type="text/javascript" src="/static/css/form.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+        <script>
+            const categorySelect = document.getElementById("subject");
+            const projectSelect = document.getElementById("Type");
+            const priceField = document.getElementById("price");
+            const messagesContainer = document.getElementById("messages");
+            const btnok = document.getElementById('btnok');
+            const paymentBtn = document.getElementById('payment');
+
+            // Form data
+            const project_id = document.getElementById('fname').value;
+            const pages = document.getElementById('pages').value;
+            const deadline = document.getElementById('deadline').value;
+            const file = document.getElementById('file').files[0];
+            const instructions = document.getElementById('instructions').value;
+
+            categorySelect.addEventListener("change", async (event) => {
+                const id = event.target.value;
+                const { data } = await axios.get(`/api/getprojects/${id}`);
+                projectSelect.innerHTML = '';
+
+                data.map(project => {
+                    const projectOption = document.createElement('option');
+                    projectOption.textContent = project.name;
+                    projectOption.value = project.ID;
+                    projectOption.setAttribute('data-price', project.price);
+                    projectOption.classList.add('project-option');
+                    projectSelect.append(projectOption);
+                });
+            });
+
+            btnok.addEventListener('click', () => {
+                const price = document.querySelector(`#Type option[value='${projectSelect.value}']`).getAttribute('data-price');
+                addText(price);
+            });
+        </script>
+</body>
+
 </html>

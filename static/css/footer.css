@@ -1,0 +1,123 @@
+section {
+    padding: 25px 0;
+}
+
+section .section-title {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+
+li{
+    list-style: none;
+}
+
+#footer {
+    background:  #eaeced !important;
+}
+
+#footer h3 {
+    padding-left: 10px;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    color:black !important;
+    font-size: 2rem;
+    font-weight: 600;
+
+}
+
+#footer ul.quick-links li a {
+    color: #18272F;
+    position: relative;
+    text-decoration: none;
+}
+#footer ul.quick-links li {
+    color: #18272F;
+    text-decoration: none;
+    padding: 3px 0;
+    text-align: left; 
+    margin-left: 40px;
+    margin-right: 25px;
+
+}
+
+#footer ul.quick-links li a::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    border-radius: 4px;
+    background-color: #18272F;
+    bottom: 0;
+    left: 0;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform .3s ease-in-out;
+  }
+  
+ #footer ul.quick-links li a:hover::before {
+    transform-origin: left;
+    transform: scaleX(1);
+  }
+
+.container4{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.container2 .row .h6 {
+    color: #fff !important;
+}
+
+.container2 .row p u a {
+    color: #fff;
+    font-size: larger;
+    font-weight: 500;
+}
+
+.col-xs-12{
+    text-align: center;
+    margin-bottom:10px;
+    margin-left:17px;
+}
+
+.col-sm-12{
+    margin-top:10px;
+    margin-bottom:10px;
+}
+.container2{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+.add-list{
+    margin-right:-40px !important;
+}
+/* responsive */
+@media (max-width:1110px){
+    #footer h3 {
+        padding-left: 0;
+        padding-bottom: 0px;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+    }
+    .container4{
+        display:flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin-bottom:30px;
+    }
+    #footer ul.quick-links li a {
+        color: #18272F;
+        text-decoration: none;
+        font-size:0.8rem;
+    }
+    #footer ul.quick-links li{
+        text-align: center;
+    }
+    .add-list{
+        margin-right:40px !important;
+    }
+} 

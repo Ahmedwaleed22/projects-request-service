@@ -1,0 +1,92 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>popup</title>
+    <link rel="stylesheet" href="/static/css/myorder.css" />
+    <link rel="stylesheet" href="/static/css/header1.css" />
+    <link rel="stylesheet" href="/static/css/chat.css" />
+
+    <script
+      src="https://kit.fontawesome.com/283605f283.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <header class="container1">
+      <nav id="navbar">
+        <div id="first">
+          <div id="logo"></div>
+          <ul>
+            <li class="item"><a href="" target="_blank"> Dashboard </a></li>
+            <li class="item">
+              <a href="myorder.php" target="_blank"> My Order </a>
+            </li>
+          </ul>
+        </div>
+        <div id="second">
+          <ul>
+            <li class="list_btn" onclick="openPopup()">Create Thesis</li>
+            <li class="list_btn">My Profile</li>
+            <li class="list_btn">Notifications</li>
+            <li class="list_btn">Logout</li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <br />
+    <br />
+
+    {% if request.args['message'] %}
+    <script>
+      alert("{{ request.args['message'] }}");
+    </script>
+    {% endif %}
+
+    <div class="typewriter">
+      <h1>Project Files</h1>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Thesis</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="head">
+          <td>File Name<br /><br /></td>
+          <td>Action<br /><br /></td>
+        </tr>
+        {% for file in files %}
+        <tr class="active-row">
+          <td>{{ file[1] }}</td>
+          <td><button onclick="window.location = '/download/project/{{ file[0] }}'">Download</button></td>
+        </tr>
+        {% endfor %}
+        <!-- <thead>
+          <tr>
+            <th>Thesis 2</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead> -->
+        <!-- <tr class="active-row">
+          <td>Project 2</td>
+          <td>05/11/2022</td>
+          <td><input type="file" id="myfile" name="myfile" /></td>
+          <td><button type="button">Download file</button></td>
+          <td>Active</td>
+        </tr> -->
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -18,24 +18,31 @@ table tbody {
 }
 table thead, table tbody tr {
   display: table;
-  width: 1000px;
+  width: 1200px;
   table-layout: fixed;
 }
 table tbody tr {
   text-align: center;
 }
-table tbody tr a {
+table tbody tr button {
   padding: 5px;
   color: #fff;
   border-radius: 5px;
   margin: 0 1px;
+  outline: none;
+  border: 1px solid #d4d4d4;
+  cursor: pointer;
+  font-size: 10px;
 }
-table tbody tr a:nth-child(1) {
+table tbody tr button:nth-child(1) {
   background-color: green;
 }
-table tbody tr a:nth-child(2) {
+table tbody tr button:nth-child(2) {
   background-color: red;
 }
-table tbody tr a:nth-child(3) {
+table tbody tr button:nth-child(3) {
   background-color: blue;
+}
+table tbody tr button:not(:last-child) {
+  margin-bottom: .5em;
 }

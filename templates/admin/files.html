@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/admin/projects.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+{% endblock %}
+{% block content %}
+<table class="projects-table">
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for file in files %}
+    <tr>
+      <td>{{ file.files }}</td>
+      <td><button data-href="/admin/api/projects/{{ project_id }}/files/{{ file.ID }}/download">Download File</button></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% block footer %}
+<script>
+  window.addEventListener('load', () => {
+    const allButtons = document.querySelectorAll('button');
+
+    allButtons.forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        const href = btn.getAttribute('data-href');
+        window.location = href;
+        console.log(btn)
+      });
+    });
+  });
+</script>
+{% endblock %}
+{% endblock %}

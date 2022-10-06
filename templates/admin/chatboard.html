@@ -1,0 +1,96 @@
+{% extends "admin/base.html" %} {% block head %}
+<link rel="stylesheet" href="/static/css/admin/chat.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+/>
+{% endblock %} {% block content %}
+<div class="chat-board">
+  <h1 class="username">Username</h1>
+  <section class="white-board" id="chatbody">
+    <div class="message user">User Message</div>
+    <div class="message admin">Admin Message</div>
+  </section>
+  <form action="#" onsubmit="sendMessage(event)">
+    <input id="chatfile" type="file" />
+    <div class="flex">
+      <input id="msgbox" type="text" placeholder="Message..." />
+      <button type="submit">Send</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block footer %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+<script>
+  const chatbody = document.getElementById("chatbody");
+
+  window.addEventListener("load", async () => {
+    const messages = await axios.get("/api/chat/admin/messages/{{ user_id }}");
+
+    messages.data.forEach((msg) => {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message");
+      if (msg.sender == 0) messageDiv.classList.add("user");
+      else messageDiv.classList.add("admin");
+
+      if (msg.type == 1) {
+        const fileLink = document.createElement("a");
+        fileLink.textContent = msg.message;
+        fileLink.href = `/api/chat/file/${msg.ID}/download`;
+        messageDiv.append(fileLink);
+      } else {
+        messageDiv.textContent = msg.message;
+      }
+
+      chatbody.append(messageDiv);
+    });
+
+    chatbody.scrollTop = chatbody.scrollHeight;
+  });
+
+  const sendMessage = async (event) => {
+    event.preventDefault();
+    const message = document.getElementById("msgbox").value;
+    const chatfile = document.getElementById("chatfile").files[0];
+
+    if (!chatfile) {
+      await axios.post("/chat/admin/message/send", {
+        message,
+        user_id: '{{ user_id }}'
+      });
+    } else {
+      let formData = new FormData();
+      formData.append("file", chatfile);
+      formData.append("user_id", "{{ user_id }}")
+
+      await axios.post("/chat/admin/file/send", formData);
+    }
+
+    const messages = await axios.get("/api/chat/messages");
+
+    chatbody.innerHTML = "";
+
+    messages.data.forEach((msg) => {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message");
+      if (msg.sender == 0) messageDiv.classList.add("user");
+      else messageDiv.classList.add("admin");
+
+      if (msg.type == 1) {
+        const fileLink = document.createElement("a");
+        fileLink.textContent = msg.message;
+        fileLink.href = `/api/chat/file/${msg.ID}/download`;
+        messageDiv.append(fileLink);
+      } else {
+        messageDiv.textContent = msg.message;
+      }
+
+      chatbody.append(messageDiv);
+    });
+
+    chatbody.scrollTop = chatbody.scrollHeight;
+    document.getElementById("msgbox").value = "";
+  };
+</script>
+{% endblock %}
