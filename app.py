@@ -187,15 +187,21 @@ def register():
         mysql.connection.commit()
         cursor.close()
 
-        return render_template('register.html', message="Account Created Successfully and Project Sent to Admins For Approval", status='SUCCESS')
+        return redirect(url_for('login'))
 
     else:
       return render_template('register.html', message="Email Already Registered", status='FAILED')
 
-    return render_template('register.html', message="Account Created Successfully", status='SUCCESS')
+    return redirect(url_for('login'))
 
   else:
     return render_template('register.html')
+
+
+@app.route('/logout')
+def logout():
+  session.pop('user_id')
+  return redirect('https://complete-thesis.com')
 
 
 @app.route('/send-work', methods=['POST'])

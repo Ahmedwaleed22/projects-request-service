@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,4 +30,56 @@
         </div>
     </div>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Login</title>
+
+    <link rel="stylesheet" href="/static/css/login.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+
+<body>
+
+    <div class="box-form">
+        <div class="left">
+            <div class="overlay">
+                <h1>Complete-Thesis</h1>
+                <p>One stop solution for all kind of thesis and assignment related work.</p>
+                <br><br><br>
+                <span>
+                    <p>Best Thesis Writing Company</p>
+                    <p>Serving All The Subjects</p>
+                    <p>Plagiarism Free Content With Turnitin Plagiarism Report</p>
+                    <p>Get Your Reserch Papers Written And Published</p>
+
+                </span>
+            </div>
+        </div>
+
+
+        <div class="right">
+            <h5>Login</h5>
+            <p>Don't have an account? <a href="/register">Creat Your Account</a> it takes less than a minute</p>
+            <form action="/login" method="POST">
+                <div class="inputs">
+                    <input name="email" type="email" placeholder="Email">
+                    <br>
+                    <input name="password" type="password" placeholder="Password">
+                </div>
+
+                <br><br>
+                <br>
+                <button type="submit">Login</button>
+        </div>
+        </form>
+    </div>
+</body>
+
 </html>

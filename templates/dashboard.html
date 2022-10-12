@@ -50,27 +50,7 @@
 </head>
 
 <body>
-    <header class="container1">
-        <nav id="navbar">
-            <div id="first">
-                <div id="logo">
-                </div>
-                <ul>
-                    <li class="item"><a href="" target="_blank"> Dashboard </a></li>
-                    <li class="item"><a href="myorder.php" target="_blank"> My Order </a></li>
-                </ul>
-            </div>
-            <div id="second">
-                <ul>
-                    <li class="list_btn" onclick="openPopup()"> Create Thesis</li>
-                    <li class="list_btn"> My Profile</li>
-                    <li class="list_btn"> Notifications</li>
-                    <li class="list_btn"> Logout </li>
-                </ul>
-            </div>
-
-        </nav>
-    </header>
+    {% include 'includes/header.html' %}
     <div class="container">
         <div class="typewriter">
             <h1>Welcome</h1>
